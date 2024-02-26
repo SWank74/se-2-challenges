@@ -20,26 +20,26 @@ const deployVendor: DeployFunction = async function (hre: HardhatRuntimeEnvironm
     You can run the `yarn account` command to check your balance in every network.
   */
 
-  // // Deploy Vendor
-  // const { deployer } = await hre.getNamedAccounts();
-  // const { deploy } = hre.deployments;
-  // const yourToken = await hre.ethers.getContract("YourToken", deployer);
-  // await deploy("Vendor", {
-  //   from: deployer,
-  //   // Contract constructor arguments
-  //   args: [yourToken.address],
-  //   log: true,
-  //   // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
-  //   // automatically mining the contract deployment transaction. There is no effect on live networks.
-  //   autoMine: true,
-  // });
-  // const vendor = await hre.ethers.getContract("Vendor", deployer);
+  // Deploy Vendor
+  const { deployer } = await hre.getNamedAccounts();
+  const { deploy } = hre.deployments;
+  const yourToken = await hre.ethers.getContract("YourToken", deployer);
+  await deploy("Vendor", {
+    from: deployer,
+    // Contract constructor arguments
+    args: [yourToken.address],
+    log: true,
+    // autoMine: can be passed to the deploy function to make the deployment process faster on local networks by
+    // automatically mining the contract deployment transaction. There is no effect on live networks.
+    autoMine: true,
+  });
+  const vendor = await hre.ethers.getContract("Vendor", deployer);
 
-  // // Transfer tokens to Vendor
-  // await yourToken.transfer(vendor.address, hre.ethers.utils.parseEther("1000"));
+  // Transfer tokens to Vendor
+  await yourToken.transfer(vendor.address, hre.ethers.utils.parseEther("1000"));
 
-  // // Transfer contract ownership to your frontend address
-  // await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
+  // Transfer contract ownership to your frontend address
+  await vendor.transferOwnership("0x311dCFaB53D641f7421C278D5650c99f630C3f37");
 };
 
 export default deployVendor;
