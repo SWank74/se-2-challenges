@@ -16,7 +16,7 @@ import {
 } from "~~/hooks/scaffold-eth";
 
 const ROLL_ETH_VALUE = "0.002";
-// const ROLLING_TIME_MS = 500;
+const ROLLING_TIME_MS = 500;
 const MAX_TABLE_ROWS = 10;
 
 const DiceGame: NextPage = () => {
@@ -63,7 +63,7 @@ const DiceGame: NextPage = () => {
         const { player, amount, roll } = log.args;
 
         if (player && amount && roll) {
-          // setTimeout(() => {
+          setTimeout(() => {
           setIsRolling(false);
           setRolls(rolls =>
             [{ address: player, amount: Number(amount), roll: roll.toString(16).toUpperCase() }, ...rolls].slice(
@@ -71,10 +71,24 @@ const DiceGame: NextPage = () => {
               MAX_TABLE_ROWS,
             ),
           );
-          // }, ROLLING_TIME_MS);
+           }, ROLLING_TIME_MS);
         }
       });
     },
+  });
+
+  useScaffoldEventSubscriber({
+    contractName : "RiggedRoll",
+    eventName : "DiceRolled",
+    listener : logs => {
+      logs.map(log =>{
+        const {rolled} = log.args;
+        if (!rolled) {
+          setIsRolling(false);
+          setRolled(false);
+        }
+      });
+    }
   });
 
   const { data: winnerHistoryData, isLoading: winnerHistoryLoading } = useScaffoldEventHistory({
@@ -104,10 +118,10 @@ const DiceGame: NextPage = () => {
         const { winner, amount } = log.args;
 
         if (winner && amount) {
-          // setTimeout(() => {
+          setTimeout(() => {
           setIsRolling(false);
           setWinners(winners => [{ address: winner, amount }, ...winners].slice(0, MAX_TABLE_ROWS));
-          // }, ROLLING_TIME_MS);
+          }, ROLLING_TIME_MS);
         }
       });
     },
@@ -150,7 +164,7 @@ const DiceGame: NextPage = () => {
 
           <div className="flex flex-col items-center pt-4 max-lg:row-start-1">
             <div className="flex w-full justify-center">
-              <span className="text-xl"> Roll a 0, 1, or 2 to win the prize! </span>
+              <span className="text-xl"> Roll a 0, 1, 2, 3, 4 or 5 to win the prize! </span>
             </div>
 
             <div className="flex items-center mt-1">
@@ -182,7 +196,7 @@ const DiceGame: NextPage = () => {
                 <Amount amount={Number(riggedRollBalance?.formatted || 0)} showUsdPrice className="text-lg" />
               </div>
             </div>
-            {/* <button
+            <button
               onClick={() => {
                 if (!rolled) {
                   setRolled(true);
@@ -194,7 +208,7 @@ const DiceGame: NextPage = () => {
               className="mt-2 btn btn-secondary btn-xl normal-case font-xl text-lg"
             >
               Rigged Roll!
-            </button> */}
+            </button>
 
             <div className="flex mt-8">
               {rolled ? (
